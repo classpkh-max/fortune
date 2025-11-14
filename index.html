@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>운세하루 - 오늘의 운세, 궁합, 사주</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 모든 CSS 스타일을 여기에 통합 -->
+    <style>
+        /* Google Fonts - Inter (Korean font not specified, so using Inter/system default) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        :root {
+            --color-primary: #D946EF; /* Pink-600 */
+            --color-secondary: #F43F5E; /* Rose-500 */
+            --color-accent: #6D28D9; /* Violet-700 */
+            --color-bg: #FFFFFF;
+            --color-text: #1F2937; /* Gray-800 */
+            --color-subtext: #4B5563; /* Gray-600 */
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6; /* Lighter background for body */
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .site-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .site-subtitle {
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* General Card and Button Styling */
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--color-secondary);
+            color: white;
+            box-shadow: 0 4px 6px rgba(244, 63, 94, 0.4);
+        }
+
+        .btn-primary:hover {
+            background-color: #E11D48; /* Deeper red */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(244, 63, 94, 0.5);
+        }
+
+        .btn-disabled {
+            background-color: #A3A3A3;
+            color: #E5E5E5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-disabled:hover {
+            transform: none;
+        }
+
+        /* Index/Main View - Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .menu-card {
+            border: 3px solid var(--color-primary);
+            background-color: #fce7f3; /* Pink-50 */
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 2rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .menu-card:hover {
+            background-color: #FBCFE8; /* Pink-200 */
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-card.active {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-accent);
+            box-shadow: 0 5px 15px rgba(217, 70, 239, 0.5);
+        }
+
+        /* Input Form Styling */
+        .form-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap; /* Add responsiveness */
+        }
+
+        .form-group > select {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            background-color: white;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group > select:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+
+        /* Ad View Styling */
+        .ad-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px; 
+            text-align: center;
+        }
+
+        .ad-area {
+            width: 100%;
+            max-width: 728px;
+            height: 200px; /* Placeholder height */
+            background-color: #E5E7EB; /* Light gray placeholder */
+            border: 2px dashed #9CA3AF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            border-radius: 8px;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .countdown {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-secondary);
+            margin: 1rem 0;
+        }
+
+        /* Result View Styling */
+        .result-header {
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+
+        #result-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        #result-summary {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--color-subtext);
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid #EEE;
+        }
+
+        #fortune-result-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .fortune-card {
+            background-color: #F9FAFB; /* Lightest gray */
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--color-primary);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .card-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--color-text);
+            white-space: pre-wrap; /* For line breaks from Gemini API */
+        }
+
+        /* Special Cards */
+        .advice-card {
+            border-left-color: var(--color-secondary);
+            background-color: #FEF2F2; /* Red-50 */
+        }
+        .advice-card .card-title {
+            color: var(--color-secondary);
+        }
+
+        .score-card {
+            grid-column: 1 / -1; /* Full width on mobile/tablet */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+            color: white !important;
+            text-align: center;
+            border-left: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .score-card h2 { color: white !important; border-bottom: none; margin: 0; }
+        .score-card p { color: white !important; margin: 0; }
+
+        /* Loading Spinner */
+        #loading-spinner {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        .spinner {
+            border: 4px solid rgba(217, 70, 239, 0.2);
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Grid Adjustments */
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+            .menu-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            #fortune-result-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .score-card {
+                padding: 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+             #fortune-result-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .score-card {
+                grid-column: 1 / 2; /* Score takes 1 column on large screens */
+            }
+            /* Adjust subsequent cards to span 2 columns to balance layout */
+            .score-card + .fortune-card:nth-of-type(1),
+            .score-card + .fortune-card:nth-of-type(2) {
+                grid-column: span 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="site-title">운세하루</h1>
+        <p class="site-subtitle">생년월일과 태어난 시간으로 보는 오늘의 운세와 궁합</p>
+    </header>
+
+    <main id="app-main" class="container">
+        <!-- 페이지 내용이 여기에 동적으로 로드됩니다 -->
+    </main>
+
+    <!-- 모든 JavaScript 로직 통합 -->
+    <script type="module">
+        // =================================================================================
+        // fortune.js 로직 통합 및 API 키 설정 (보안상 빈 문자열로 설정)
+        // =================================================================================
+
+        const apiKey = ""; 
+        const GEMINI_MODEL = "gemini-2.5-flash-preview-09-2025";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+        const SITE_NAME = "운세하루";
+
+        const ZODIAC_SIGNS = [
+            "쥐(子)", "소(丑)", "호랑이(寅)", "토끼(卯)",
+            "용(辰)", "뱀(巳)", "말(午)", "양(未)",
+            "원숭이(申)", "닭(酉)", "개(戌)", "돼지(亥)"
+        ];
+
+        function getFiveElement(year) {
+            const lastDigit = year % 10;
+            if (lastDigit === 4 || lastDigit === 5) return "목(木)";
+            if (lastDigit === 6 || lastDigit === 7) return "화(火)";
+            if (lastDigit === 8 || lastDigit === 9) return "토(土)";
+            if (lastDigit === 0 || lastDigit === 1) return "금(金)";
+            if (lastDigit === 2 || lastDigit === 3) return "수(水)";
+            return "토(土)";
+        }
+
+        function getZodiacSign(year) {
+            const startYear = 1900;
+            const index = (year - startYear) % 12;
+            return ZODIAC_SIGNS[index];
+        }
+
+        function calculateSajuInfo(userData) {
+            const today = new Date();
+            const year = parseInt(userData.year);
+            const month = parseInt(userData.month);
+            const day = parseInt(userData.day);
+            
+            const age = today.getFullYear() - year + 1; // 한국식 나이
+            const zodiacSign = getZodiacSign(year);
+            const element = getFiveElement(year);
+
+            return {
+                ...userData,
+                age,
+                zodiacSign,
+                element,
+                birthDate: `${year}년 ${month}월 ${day}일 ${userData.hour}시`,
+            };
+        }
+
+        // --- Prompt Builders (Simplified for brevity, structure remains) ---
+
+        function buildSexCompatibilityPrompt(user, partner) {
+            const userSaju = calculateSajuInfo(user);
+            const partnerSaju = calculateSajuInfo(partner);
+            const ageDiff = Math.abs(userSaju.age - partnerSaju.age);
+            
+            const systemPrompt = `당신은 ${SITE_NAME}의 숙련된 궁합 전문가입니다. 다음 두 사람의 정보를 바탕으로 '속궁합'에 대한 자세하고 부드러운 운세 결과를 한국어 존댓말로 작성해야 합니다. 응답은 반드시 아래 정의된 JSON Schema에 맞는 문자열 형식이어야 합니다.`;
+            const userQuery = `운세 종류: 속궁합. 나의 정보: ${userSaju.birthDate}, 띠: ${userSaju.zodiacSign}, 오행: ${userSaju.element}, 태어난 시간: ${userSaju.hour}. 상대방 정보: ${partnerSaju.birthDate}, 띠: ${partnerSaju.zodiacSign}, 오행: ${partnerSaju.element}, 태어난 시간: ${partnerSaju.hour}. 나이 차이: ${ageDiff}세.`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "score": { "type": "NUMBER" },
+                    "grade": { "type": "STRING" },
+                    "summary": { "type": "STRING" },
+                    "passion": { "type": "STRING" },
+                    "rhythm": { "type": "STRING" },
+                    "strengths": { "type": "STRING" },
+                    "weaknesses": { "type": "STRING" },
+                    "advice": { "type": "STRING" }
+                },
+                required: ["score", "grade", "summary", "passion", "rhythm", "strengths", "weaknesses", "advice"]
+            };
+
+            return { systemPrompt, userQuery, responseSchema };
+        }
+        
+        function buildTodayFortunePrompt(user) {
+            const userSaju = calculateSajuInfo(user);
+            const today = new Date();
+            const todayDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+
+            const systemPrompt = `당신은 ${SITE_NAME}의 전문 역술인입니다. 오늘(${todayDate})의 운세를 아래 사용자의 사주 정보를 바탕으로 자세하게 풀어주세요. 응답은 반드시 아래 정의된 JSON Schema에 맞는 문자열 형식이어야 합니다.`;
+            const userQuery = `운세 종류: 오늘의 운세. 오늘 날짜: ${todayDate}. 사용자 정보: ${userSaju.birthDate}, 띠: ${userSaju.zodiacSign}, 오행: ${userSaju.element}, 태어난 시간: ${userSaju.hour}.`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "summary": { "type": "STRING" },
+                    "overall": { "type": "STRING" },
+                    "love": { "type": "STRING" },
+                    "money": { "type": "STRING" },
+                    "health": { "type": "STRING" },
+                    "advice": { "type": "STRING" }
+                },
+                required: ["summary", "overall", "love", "money", "health", "advice"]
+            };
+
+            return { systemPrompt, userQuery, responseSchema };
+        }
+
+        function getSimpleNewYearGrade(user, targetYear) {
+            const base = (parseInt(user.year) + parseInt(user.month) + parseInt(user.day) + targetYear) % 12;
+            let score = 0;
+            let grade = "평(平)";
+
+            if (base < 2) { grade = "대길(大吉)"; score = 90 + base * 5; }
+            else if (base < 4) { grade = "길(吉)"; score = 80 + base * 2; }
+            else if (base < 6) { grade = "반길(半吉)"; score = 70 + base * 1; }
+            else if (base < 8) { grade = "평(平)"; score = 60 + base * 0.5; }
+            else if (base < 10) { grade = "반흉(半凶)"; score = 50 + base * 0.2; }
+            else { grade = "흉(凶)"; score = 40 + base * 0.1; }
+
+            return { grade, score: Math.round(score) };
+        }
+
+        function buildYearFortunePrompt(user, targetYear) {
+            const userSaju = calculateSajuInfo(user);
+            const { grade, score } = getSimpleNewYearGrade(user, targetYear);
+
+            const systemPrompt = `당신은 ${SITE_NAME}의 전문 역술인입니다. 사용자의 사주 정보와 간이 토정비결 점수를 참고하여, ${targetYear}년 한 해의 운세를 자세하게 풀어주세요. 운세의 분위기는 '간이 등급: ${grade} (점수: ${score}점)'에 맞춰 작성해야 합니다. 응답은 반드시 아래 정의된 JSON Schema에 맞는 문자열 형식이어야 합니다.`;
+            const userQuery = `운세 종류: ${targetYear}년 신년 운세. 사용자 정보: ${userSaju.birthDate}, 띠: ${userSaju.zodiacSign}, 오행: ${userSaju.element}, 태어난 시간: ${userSaju.hour}. 간이 등급: ${grade} (점수: ${score}점).`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "summary": { "type": "STRING" }, "grade": { "type": "STRING" },
+                    "overall": { "type": "STRING" }, "money": { "type": "STRING" },
+                    "relationship": { "type": "STRING" }, "career": { "type": "STRING" },
+                    "warning": { "type": "STRING" }, "keywords": { "type": "ARRAY", "items": { "type": "STRING" } }
+                },
+                required: ["summary", "grade", "overall", "money", "relationship", "career", "warning", "keywords"]
+            };
+
+            return { systemPrompt, userQuery, responseSchema };
+        }
+
+        function buildSajuCompatibilityPrompt(user, partner) {
+            const userSaju = calculateSajuInfo(user);
+            const partnerSaju = calculateSajuInfo(partner);
+            const ageDiff = Math.abs(userSaju.age - partnerSaju.age);
+
+            const systemPrompt = `당신은 ${SITE_NAME}의 숙련된 궁합 전문가입니다. 다음 두 사람의 정보를 바탕으로 '사주 궁합'에 대한 자세하고 부드러운 운세 결과를 한국어 존댓말로 작성해야 합니다. 응답은 반드시 아래 정의된 JSON Schema에 맞는 문자열 형식이어야 합니다.`;
+            const userQuery = `운세 종류: 사주 궁합 (장기적 관점). 나의 정보: ${userSaju.birthDate}, 띠: ${userSaju.zodiacSign}, 오행: ${userSaju.element}, 태어난 시간: ${userSaju.hour}. 상대방 정보: ${partnerSaju.birthDate}, 띠: ${partnerSaju.zodiacSign}, 오행: ${partnerSaju.element}, 태어난 시간: ${partnerSaju.hour}. 나이 차이: ${ageDiff}세.`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "score": { "type": "NUMBER" }, "grade": { "type": "STRING" },
+                    "summary": { "type": "STRING" }, "strengths": { "type": "STRING" },
+                    "conflicts": { "type": "STRING" }, "future": { "type": "STRING" },
+                    "advice": { "type": "STRING" }
+                },
+                required: ["score", "grade", "summary", "strengths", "conflicts", "future", "advice"]
+            };
+
+            return { systemPrompt, userQuery, responseSchema };
+        }
+
+        async function fetchFortuneResult(mode, user, partner = null) {
+            if (!apiKey) {
+                 // 실제 환경에서는 API 키가 설정되어야 합니다.
+            }
+
+            let promptBuilder;
+
+            switch (mode) {
+                case 'SEX_COMPATIBILITY': promptBuilder = buildSexCompatibilityPrompt(user, partner); break;
+                case 'TODAY_FORTUNE': promptBuilder = buildTodayFortunePrompt(user); break;
+                case 'YEAR_FORTUNE':
+                    const targetYear = new Date().getFullYear();
+                    promptBuilder = buildYearFortunePrompt(user, targetYear);
+                    break;
+                case 'SAJU_COMPATIBILITY': promptBuilder = buildSajuCompatibilityPrompt(user, partner); break;
+                default: throw new Error("유효하지 않은 운세 모드입니다.");
+            }
+
+            const payload = {
+                contents: [{ parts: [{ text: promptBuilder.userQuery }] }],
+                systemInstruction: { parts: [{ text: promptBuilder.systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: promptBuilder.responseSchema
+                }
+            };
+
+            // API 호출 (여기에 지수 백오프 로직을 추가할 수 있지만, 예제에서는 단순화)
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("HTTP 오류:", errorText);
+                    throw new Error("운세 생성 중 API 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                }
+
+                const result = await response.json();
+                const responseText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!responseText) {
+                    throw new Error("운세 결과를 받지 못했습니다. 잠시 후 다시 시도해주세요.");
+                }
+
+                return JSON.parse(responseText);
+
+            } catch (error) {
+                console.error("API 호출 중 예상치 못한 오류 발생:", error);
+                throw new Error(error.message || "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            }
+        }
+
+
+        // =================================================================================
+        // ui.js 및 HTML 뷰 관리 로직 통합
+        // =================================================================================
+
+        // LocalStorage 키 관리
+        const LS_KEYS = {
+            mode: "fortune_mode",
+            user: "fortune_user_data",
+            partner: "fortune_partner_data",
+            result: "fortune_result"
+        };
+
+        const JISHI_DATA = [
+            { value: "자", range: "23:30~01:29", emoji: "🐭" }, { value: "축", range: "01:30~03:29", emoji: "🐮" },
+            { value: "인", range: "03:30~05:29", emoji: "🐯" }, { value: "묘", range: "05:30~07:29", emoji: "🐰" },
+            { value: "진", range: "07:30~09:29", emoji: "🐲" }, { value: "사", range: "09:30~11:29", emoji: "🐍" },
+            { value: "오", range: "11:30~13:29", emoji: "🐴" }, { value: "미", range: "13:30~15:29", emoji: "🐑" },
+            { value: "신", range: "15:30~17:29", emoji: "🐵" }, { value: "유", range: "17:30~19:29", emoji: "🐔" },
+            { value: "술", range: "19:30~21:29", emoji: "🐶" }, { value: "해", range: "21:30~23:29", emoji: "🐷" }
+        ];
+
+        const MODE_CONFIG = {
+            TODAY_FORTUNE: { name: "오늘의 운세", needsPartner: false },
+            YEAR_FORTUNE: { name: "신년 운세", needsPartner: false },
+            SAJU_COMPATIBILITY: { name: "사주 궁합", needsPartner: true },
+            SEX_COMPATIBILITY: { name: "속궁합", needsPartner: true },
+        };
+
+        // --- View Switching (Router) ---
+        function navigateTo(viewName) {
+            const mainEl = document.getElementById('app-main');
+            mainEl.innerHTML = ''; // 기존 내용 초기화
+
+            switch (viewName) {
+                case 'main': renderMainView(); break;
+                case 'ad': renderAdView(); break;
+                case 'result': renderResultView(); break;
+            }
+        }
+
+
+        // --- Helper Functions ---
+
+        function populateYears(selector) {
+            const currentYear = new Date().getFullYear();
+            const startYear = 1900;
+            const yearSelects = document.querySelectorAll(selector);
+
+            yearSelects.forEach(select => {
+                select.innerHTML = '<option value="" disabled selected>년도</option>';
+                for (let year = currentYear; year >= startYear; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function populateJishi(selector) {
+            const hourSelects = document.querySelectorAll(selector);
+            hourSelects.forEach(select => {
+                select.innerHTML = '<option value="" disabled selected>태어난 시간(12지)</option>';
+                JISHI_DATA.forEach(jishi => {
+                    const option = document.createElement('option');
+                    option.value = jishi.value;
+                    option.textContent = `${jishi.emoji} ${jishi.value} (${jishi.range})`;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function toggleInputForms(mode) {
+            const config = MODE_CONFIG[mode];
+            const formContainer = document.getElementById('input-form-container');
+            const partnerBlock = document.getElementById('partner-info-block');
+            const formTitle = document.getElementById('form-title');
+
+            if (!config) {
+                formContainer.style.display = 'none';
+                return;
+            }
+
+            formTitle.textContent = `${config.name}을(를) 위한 정보를 입력해주세요`;
+            formContainer.style.display = 'block';
+
+            if (config.needsPartner) {
+                partnerBlock.style.display = 'block';
+            } else {
+                partnerBlock.style.display = 'none';
+            }
+
+            localStorage.setItem(LS_KEYS.mode, mode);
+        }
+
+        function extractFormData(prefix) {
+            const year = document.getElementById(`${prefix}-year`).value;
+            const month = document.getElementById(`${prefix}-month`).value;
+            const day = document.getElementById(`${prefix}-day`).value;
+            const hour = document.getElementById(`${prefix}-hour`).value;
+
+            return { year, month, day, hour };
+        }
+
+        function validateData(data, isPartner = false) {
+            const prefix = isPartner ? '상대방' : '나';
+            // alert() 사용 불가 -> 커스텀 모달이나 console.error 사용
+            if (!data.year || !data.month || !data.day || !data.hour) {
+                console.error(`${prefix}의 모든 생년월일 및 태어난 시간을 선택해주세요.`);
+                // 사용자에게 메시지를 보여줄 수 있도록 간단한 DOM 조작으로 대체
+                document.getElementById('form-error-message').textContent = `⚠️ ${prefix}의 모든 정보를 선택해주세요.`;
+                document.getElementById('form-error-message').style.display = 'block';
+                return false;
+            }
+            document.getElementById('form-error-message').style.display = 'none';
+            return true;
+        }
+
+        function handleGenerateFortune() {
+            const mode = localStorage.getItem(LS_KEYS.mode);
+            if (!mode) {
+                document.getElementById('form-error-message').textContent = `⚠️ 운세 종류를 먼저 선택해주세요.`;
+                document.getElementById('form-error-message').style.display = 'block';
+                return;
+            }
+
+            const userData = extractFormData('user');
+            const config = MODE_CONFIG[mode];
+
+            if (!validateData(userData)) return;
+
+            let partnerData = null;
+            if (config.needsPartner) {
+                partnerData = extractFormData('partner');
+                if (!validateData(partnerData, true)) return;
+            }
+
+            localStorage.setItem(LS_KEYS.user, JSON.stringify(userData));
+            if (partnerData) {
+                localStorage.setItem(LS_KEYS.partner, JSON.stringify(partnerData));
+            } else {
+                localStorage.removeItem(LS_KEYS.partner);
+            }
+            localStorage.removeItem(LS_KEYS.result);
+
+            navigateTo('ad'); // ad.html 대신 ad 뷰로 이동
+        }
+
+        function toggleLoading(show, message = "운세 결과를 생성 중입니다... 잠시만 기다려 주세요.") {
+            const loadingEl = document.getElementById('loading-spinner');
+            const resultEl = document.getElementById('fortune-result-container');
+            const resultContentWrapper = document.getElementById('result-content-wrapper');
+
+
+            if (loadingEl) { // result 뷰에 있을 때만 실행
+                 if (show) {
+                    loadingEl.style.display = 'flex';
+                    loadingEl.querySelector('p').textContent = message;
+                    if (resultContentWrapper) resultContentWrapper.style.display = 'none';
+                } else {
+                    loadingEl.style.display = 'none';
+                    if (resultContentWrapper && !message.includes("오류")) {
+                         resultContentWrapper.style.display = 'block';
+                    }
+                }
+            }
+        }
+
+        function renderFortuneResult(result, mode) {
+            const config = MODE_CONFIG[mode];
+            if (!config) return;
+
+            document.getElementById('result-title').textContent = `${config.name} 결과`;
+            document.getElementById('result-summary').textContent = result.summary;
+
+            const resultContainer = document.getElementById('fortune-result-container');
+            resultContainer.innerHTML = '';
+
+            const sections = [];
+            const resultWrapper = document.getElementById('result-content-wrapper');
+            if (resultWrapper) resultWrapper.style.display = 'block';
+
+
+            if (mode === 'TODAY_FORTUNE') {
+                sections.push(
+                    { title: "오늘의 종합 운세", key: "overall", emoji: "✨" },
+                    { title: "사랑/대인관계 운", key: "love", emoji: "❤️" },
+                    { title: "금전/재물 운", key: "money", emoji: "💰" },
+                    { title: "건강/컨디션 운", key: "health", emoji: "💪" },
+                    { title: "오늘의 조언", key: "advice", emoji: "💡", isAdvice: true },
+                );
+            } else if (mode === 'YEAR_FORTUNE') {
+                const keywordsHTML = result.keywords && result.keywords.length > 0
+                    ? `<div class="p-4 bg-yellow-100 border border-yellow-300 rounded-xl mt-4">
+                        <h3 class="font-bold text-lg mb-2 text-yellow-800">🔑 올해의 핵심 키워드</h3>
+                        <div class="flex flex-wrap gap-2">
+                            ${result.keywords.map(kw => `<span class="px-3 py-1 bg-white text-pink-700 font-semibold rounded-full shadow-md">${kw}</span>`).join('')}
+                        </div>
+                      </div>`
+                    : '';
+                
+                const gradeCard = `<div class="fortune-card grade-card bg-pink-500 text-white shadow-xl">
+                    <h2 class="text-2xl font-extrabold mb-1">총평 등급</h2>
+                    <p class="text-4xl font-black">${result.grade}</p>
+                </div>`;
+                resultContainer.insertAdjacentHTML('beforeend', gradeCard);
+
+                sections.push(
+                    { title: "전반적인 운세 흐름", key: "overall", emoji: "🧭" },
+                    { title: "재물/사업/투자 운", key: "money", emoji: "💵" },
+                    { title: "대인 관계/가족/동료", key: "relationship", emoji: "🤝" },
+                    { title: "커리어/직업/학업 운", key: "career", emoji: "💼" },
+                    { title: "올해 주의할 점", key: "warning", emoji: "⚠️" },
+                );
+                // 키워드는 결과 섹션 바로 앞에 삽입
+                const keywordsDiv = document.createElement('div');
+                keywordsDiv.innerHTML = keywordsHTML;
+                resultContainer.appendChild(keywordsDiv.firstChild);
+                
+            } else if (mode === 'SEX_COMPATIBILITY' || mode === 'SAJU_COMPATIBILITY') {
+                const scoreCard = `<div class="fortune-card score-card">
+                    <h2 class="text-2xl font-extrabold mb-1">궁합 점수</h2>
+                    <p class="text-4xl font-black">${result.score}점</p>
+                    <p class="text-xl font-semibold mt-2">등급: ${result.grade}</p>
+                </div>`;
+                resultContainer.insertAdjacentHTML('beforeend', scoreCard);
+
+                if (mode === 'SEX_COMPATIBILITY') {
+                    sections.push(
+                        { title: "열정/스킨십 코드", key: "passion", emoji: "🔥" },
+                        { title: "생활 리듬/감정선", key: "rhythm", emoji: "🎶" },
+                        { title: "잘 맞는 부분 (강점)", key: "strengths", emoji: "✅" },
+                        { title: "조심할 부분 (주의점)", key: "weaknesses", emoji: "💔" },
+                        { title: "관계를 위한 조언", key: "advice", emoji: "💬", isAdvice: true },
+                    );
+                } else {
+                    sections.push(
+                        { title: "궁합 강점", key: "strengths", emoji: "🌟" },
+                        { title: "부딪힐 수 있는 부분", key: "conflicts", emoji: "💥" },
+                        { title: "장기적인 관계의 가능성", key: "future", emoji: "🔮" },
+                        { title: "관계를 위한 조언", key: "advice", emoji: "💬", isAdvice: true },
+                    );
+                }
+            }
+
+            sections.forEach(section => {
+                const content = result[section.key] || "운세 내용을 불러오지 못했습니다.";
+                const isAdvice = section.isAdvice ? 'advice-card' : '';
+
+                const cardHTML = `
+                    <div class="fortune-card ${isAdvice}">
+                        <h3 class="card-title">${section.emoji} ${section.title}</h3>
+                        <p class="card-content">${content}</p>
+                    </div>
+                `;
+                resultContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        async function initializeResultPage() {
+            toggleLoading(true);
+
+            try {
+                const mode = localStorage.getItem(LS_KEYS.mode);
+                const userJson = localStorage.getItem(LS_KEYS.user);
+                const partnerJson = localStorage.getItem(LS_KEYS.partner);
+
+                if (!mode || !userJson) {
+                    throw new Error("운세 정보가 부족합니다. 메인 페이지로 돌아가 다시 시도해주세요.");
+                }
+
+                const userData = JSON.parse(userJson);
+                const partnerData = partnerJson ? JSON.parse(partnerJson) : null;
+
+                const userSaju = calculateSajuInfo(userData);
+                document.getElementById('user-info-display').innerHTML = `
+                    <p class="text-sm text-gray-600 mb-2">
+                        나: ${userSaju.year}년 ${userSaju.month}월 ${userSaju.day}일, ${userSaju.hour}시
+                        (띠: ${userSaju.zodiacSign}, 오행: ${userSaju.element})
+                    </p>
+                `;
+
+                if (partnerData) {
+                    const partnerSaju = calculateSajuInfo(partnerData);
+                    document.getElementById('partner-info-display').innerHTML = `
+                        <p class="text-sm text-gray-600">
+                            상대: ${partnerSaju.year}년 ${partnerSaju.month}월 ${partnerSaju.day}일, ${partnerSaju.hour}시
+                            (띠: ${partnerSaju.zodiacSign}, 오행: ${partnerSaju.element})
+                        </p>
+                    `;
+                }
+
+                const fortuneResult = await fetchFortuneResult(mode, userData, partnerData);
+                renderFortuneResult(fortuneResult, mode);
+
+            } catch (error) {
+                console.error("결과 생성 실패:", error);
+                toggleLoading(true, `❌ 오류: ${error.message || "운세 생성 중 치명적인 오류가 발생했습니다."}`);
+                
+            } finally {
+                // 에러 메시지가 표시된 경우가 아니라면 로딩 화면 제거
+                if (document.getElementById('loading-spinner').style.display !== 'none' && !document.getElementById('loading-spinner').querySelector('p').textContent.includes('오류')) {
+                    toggleLoading(false);
+                }
+            }
+        }
+
+
+        // =================================================================================
+        // HTML View Renderers
+        // =================================================================================
+
+        function renderMainView() {
+            const mainEl = document.getElementById('app-main');
+            mainEl.innerHTML = `
+                <section class="card">
+                    <h2 class="text-xl font-bold mb-4" style="color: var(--color-accent);">원하는 운세 메뉴를 선택하세요</h2>
+                    <div class="menu-grid">
+                        <div class="menu-card" data-mode="SEX_COMPATIBILITY">
+                            🔥 속궁합<br><span style="font-size: 0.8rem; opacity: 0.8;">(나와 상대)</span>
+                        </div>
+                        <div class="menu-card" data-mode="TODAY_FORTUNE">
+                            ☀️ 오늘의 운세<br><span style="font-size: 0.8rem; opacity: 0.8;">(나의 정보)</span>
+                        </div>
+                        <div class="menu-card" data-mode="YEAR_FORTUNE">
+                            🔮 신년 운세<br><span style="font-size: 0.8rem; opacity: 0.8;">(나의 정보)</span>
+                        </div>
+                        <div class="menu-card" data-mode="SAJU_COMPATIBILITY">
+                            🤝 사주 궁합<br><span style="font-size: 0.8rem; opacity: 0.8;">(나와 상대)</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="input-form-container" class="card" style="display: none;">
+                    <h2 id="form-title" class="form-title"></h2>
+                    <p id="form-error-message" class="text-red-500 font-semibold mb-3" style="display:none;"></p>
+
+                    <!-- 나의 정보 입력 블록 -->
+                    <div id="user-info-block" class="mb-6">
+                        <h3 class="text-lg font-semibold mb-2 text-pink-700">👤 나의 정보 (양력 기준)</h3>
+                        <div class="form-group">
+                            <select id="user-year" class="year-select"></select>
+                            <select id="user-month">
+                                <option value="" disabled selected>월</option>
+                                ${Array.from({length: 12}, (_, i) => `<option value="${i+1}">${i+1}월</option>`).join('')}
+                            </select>
+                            <select id="user-day">
+                                <option value="" disabled selected>일</option>
+                                ${Array.from({length: 31}, (_, i) => `<option value="${i+1}">${i+1}일</option>`).join('')}
+                            </select>
+                            <select id="user-hour" class="hour-select"></select>
+                        </div>
+                    </div>
+
+                    <!-- 상대방 정보 입력 블록 (궁합 모드 시에만 표시됨) -->
+                    <div id="partner-info-block" class="mb-6" style="display: none;">
+                        <h3 class="text-lg font-semibold mb-2 text-pink-700">❤️ 상대방 정보 (양력 기준)</h3>
+                        <div class="form-group">
+                            <select id="partner-year" class="year-select"></select>
+                            <select id="partner-month">
+                                <option value="" disabled selected>월</option>
+                                ${Array.from({length: 12}, (_, i) => `<option value="${i+1}">${i+1}월</option>`).join('')}
+                            </select>
+                            <select id="partner-day">
+                                <option value="" disabled selected>일</option>
+                                ${Array.from({length: 31}, (_, i) => `<option value="${i+1}">${i+1}일</option>`).join('')}
+                            </select>
+                            <select id="partner-hour" class="hour-select"></select>
+                        </div>
+                    </div>
+
+                    <button id="generate-btn" class="btn btn-primary w-full">
+                        운세 결과 보기
+                    </button>
+                </section>
+            `;
+            
+            // 이벤트 리스너 및 초기화
+            populateYears('.year-select');
+            populateJishi('.hour-select');
+
+            const menuCards = document.querySelectorAll('.menu-card');
+            menuCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    menuCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const mode = this.getAttribute('data-mode');
+                    toggleInputForms(mode);
+                });
+            });
+
+            document.getElementById('generate-btn').addEventListener('click', handleGenerateFortune);
+            toggleInputForms(null);
+        }
+
+        function renderAdView() {
+            const mainEl = document.getElementById('app-main');
+            mainEl.innerHTML = `
+                <section class="card ad-page">
+                    <h2 class="text-2xl font-bold mb-4" style="color: var(--color-accent);" id="ad-status">
+                        운세 결과를 위한 광고를 30초간 시청해야 합니다.
+                    </h2>
+                    
+                    <p class="text-lg font-semibold mb-4">남은 시간:</p>
+                    <div id="countdown" class="countdown">30</div>
+                    
+                    <div class="ad-area">
+                        <span>[광고 Placeholder]</span>
+                    </div>
+
+                    <button id="result-btn" class="btn w-full max-w-xs mt-6 btn-disabled" disabled>
+                        결과 확인하기
+                    </button>
+                    <p class="text-sm text-gray-500 mt-2">※ 카운트다운이 0이 되면 버튼이 활성화됩니다.</p>
+                </section>
+            `;
+
+            // Ad 뷰 로직 (카운트다운)
+            const COUNTDOWN_SECONDS = 30;
+            let timer = COUNTDOWN_SECONDS;
+            let countdownInterval;
+            const countdownEl = document.getElementById('countdown');
+            const resultBtn = document.getElementById('result-btn');
+
+            resultBtn.disabled = true;
+            
+            countdownInterval = setInterval(() => {
+                timer--;
+                countdownEl.textContent = timer;
+
+                if (timer <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownEl.textContent = "확인 가능!";
+                    document.getElementById('ad-status').textContent = "광고 시청이 완료되었습니다. 결과를 확인하세요.";
+                    
+                    resultBtn.disabled = false;
+                    resultBtn.classList.remove('btn-disabled');
+                    resultBtn.classList.add('btn-primary');
+                }
+            }, 1000);
+
+            resultBtn.addEventListener('click', () => {
+                if (!resultBtn.disabled) {
+                    clearInterval(countdownInterval);
+                    navigateTo('result'); // result.html 대신 result 뷰로 이동
+                }
+            });
+        }
+
+        function renderResultView() {
+             const mainEl = document.getElementById('app-main');
+            mainEl.innerHTML = `
+                <section class="result-header">
+                    <h2 id="result-title">운세 결과</h2>
+                    
+                    <div class="flex flex-col items-center justify-center text-sm text-gray-500">
+                        <div id="user-info-display"></div>
+                        <div id="partner-info-display"></div>
+                    </div>
+
+                    <p id="result-summary" class="text-xl font-bold"></p>
+                </section>
+
+                <!-- 로딩 스피너 및 메시지 (JS로 토글됨) -->
+                <div id="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>운세 결과를 생성 중입니다... 잠시만 기다려 주세요.</p>
+                    <p class="text-sm text-gray-500 mt-2">
+                        (이 과정은 Gemini API 통신으로 인해 최대 10~20초 소요될 수 있습니다.)
+                    </p>
+                </div>
+                
+                <div id="result-content-wrapper" style="display: none;">
+                    <!-- 운세 결과 섹션 (JS로 내용 채워짐) -->
+                    <section id="fortune-result-container"></section>
+                    
+                    <div class="text-center pt-8 pb-4">
+                        <a href="#" id="go-home-btn" class="btn btn-primary">
+                            다른 운세 보러가기
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('go-home-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateTo('main');
+            });
+
+            // 결과 페이지 로직 시작
+            initializeResultPage();
+        }
+
+        // =================================================================================
+        // 초기화
+        // =================================================================================
+        window.onload = function() {
+            document.querySelector('.site-title').textContent = SITE_NAME;
+            navigateTo('main'); // 시작 시 메인 뷰 로드
+        };
+
+    </script>
+</body>
+</html>
